@@ -1,23 +1,22 @@
 // scroll 3d
 
-let zSpacing = -1000,
-    lastPos = - zSpacing/5,
+const zSpacing = -1000
+let
+    frames = [...document.getElementsByClassName('kits_item')],
+    zVals = frames.map((item, index) => zSpacing * (index + 1)),
+    lastPos = document.documentElement.scrollTop
 
-    $frames = document.getElementsByClassName('kits_item'),
-    frames = Array.from($frames),
-    zVals = []
+zVals[zVals.length - 1] += zSpacing * 2.5
 
-window.addEventListener('scroll', ()=>  {
-    let top = document.documentElement.scrollTop,
-        delta = lastPos - top
-
+window.addEventListener('scroll', () => {
+    const 
+        top = document.documentElement.scrollTop,
+        delta = top - lastPos
     lastPos = top
-
-    frames.forEach(function(n,i) {
-        zVals.push((i * zSpacing) + zSpacing)
-        zVals[i] += delta * -5.5
-        let frame = frames[i],
-            transform = `translateZ(${zVals[i]}px)`
+    frames.forEach(function(frame, i) {
+        zVals[i] += delta * 5.5
+        const
+            transform = `translateZ(${zVals[i]}px)`,
             opacity = zVals[i] < Math.abs(zSpacing) / 1.8 ? 1 : 0
         frame.setAttribute('style', `
             transform: ${transform};
@@ -25,4 +24,16 @@ window.addEventListener('scroll', ()=>  {
         `)
     })
 })
-window.scrollTo(0,1)
+
+const lastDiv = document.querySelector("div.kits_item:last-child")
+
+lastDiv.addEventListener("click", (event) => {
+    if(event.target == lastDiv || event.target == lastDiv.querySelector("video") && event.currentTarget != lastDiv)
+        if(lastDiv.querySelector("video").paused)
+            lastDiv.querySelector("video").play()
+        else    
+            lastDiv.querySelector("video").pause()
+})
+
+window.onbeforeunload = () => { scrollTo(0,0) }
+scrollTo(0,1)
